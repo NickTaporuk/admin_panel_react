@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router'
 
-import { Button, ButtonGroup, Modal, Glyphicon, ButtonToolbar} from 'react-bootstrap';
-
 class App extends Component {
     constructor(props) {
         super(props);
@@ -11,16 +9,26 @@ class App extends Component {
     }
 
     render() {
-
+        const { token } = this.props;
+        console.log('token',token);
         return(
             <div>
-                Hello world admin panel 2
+                Hello world admin panel { token }
             </div>
         )
     }
 }
 
+function mapStateToProps(state) {
+
+    const { token } = state;
+
+    return {
+        token,
+    }
+}
+
 export default withRouter(connect(
-    state => ({}),
+    mapStateToProps,
     dispatch => ({})
 )(App));

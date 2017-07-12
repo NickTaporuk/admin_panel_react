@@ -1,23 +1,32 @@
-import React from 'react'
+import React, { Component, PropTypes } from 'react'
+
 import {
-    Route,
     Redirect,
 } from 'react-router-dom';
 
-import Auth from './../../actions/Auth';
+import { connect } from 'react-redux'
 
-const PrivateRoute = ({ component: Component, ...rest }) => (
-    <Route {...rest} render={props => (
-        Auth.isAuthenticated ? (
-            <Component {...props}/>
-        ) : (
-            <Redirect to={{
-                pathname: '/login',
-                state: { from: props.location }
-            }}/>
-        )
-    )}/>
-)
+export default function requireAuthentication(Component) {
 
+    class AuthenticatedComponent extends Component {
+        render() {
+            console.log('this.props.user:',this.props.user);
+            return (
+                <div>
+                    {this.props.user.isAuthenticated === true
+                        ? <Component {...this.props} />
+                        : <Redirect to='/login'/>
+                    }
+                </div>
+            )
+        }
+    }
 
-export default PrivateRoute;
+    function mapStateToProps(state) {
+        return {
+            user: state.user
+        }
+    }
+
+    return connect(mapStateToProps)(AuthenticatedComponent)
+}

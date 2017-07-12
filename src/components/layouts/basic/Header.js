@@ -12,6 +12,8 @@ class Header extends Component {
 
     render() {
 
+        const { user } = this.props;
+
         return(
             <Navbar collapseOnSelect>
                 <Navbar.Header>
@@ -24,27 +26,43 @@ class Header extends Component {
                 </Navbar.Header>
                 <Navbar.Collapse>
                     <Nav>
-                        <NavItem>
+                        <li>
                             <Link to="/">
                                 Home
                             </Link>
-                        </NavItem>
-
+                        </li>
                     </Nav>
                     <Nav pullRight>
-                        <NavItem >
-                            <Link to="/login">
-                                Login
-                            </Link>
-                        </NavItem>
+                        <li>
+                            {
+                                user.token ?
+                                <Link to="/logout">
+                                    <span>
+                                        ({user.user.first_name} {user.user.last_name})
+                                    </span>
+                                    Logout
+                                </Link>     :
+                                <Link to="/login">
+                                    { user.message !== null && user.message.hasOwnProperty('text') && user.message.text !== undefined ? `(${user.message.text} | ${user.message.event})`: null }Login</Link>
+                            }
+
+                        </li>
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>
         )
     }
 }
+function mapStateToProps(state) {
+
+    const { user } = state;
+
+    return {
+        user,
+    }
+}
 
 export default connect(
-    state => ({}),
+    mapStateToProps,
     dispatch => ({})
 )(withRouter(Header));

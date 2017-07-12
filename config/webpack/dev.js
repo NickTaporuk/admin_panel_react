@@ -51,13 +51,14 @@ module.exports = {
     ],
     devServer: {
         compress: true,
-        port:9999,
+        port: process.env.PORT || 9999,
         overlay: {
             warnings: true,
             errors: true
         },
         open: true,
         hot: true,
+        historyApiFallback: true,
         openPage: ''
 
     }
