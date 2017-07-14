@@ -17,3 +17,11 @@ export const saveStateToLocalStorage = (name,state) => {
         // Ignore write errors
     }
 };
+
+export const resetStateToLocalStorage = () => {
+    try {
+        localStorage.clear();
+    } catch (err) {
+        // Ignore write errors
+    }
+};

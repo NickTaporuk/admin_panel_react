@@ -3,40 +3,63 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router'
 import { Link } from 'react-router-dom';
 import { SET_CURRENT_USER, USER_NOT_AUTHORIZED } from './../../../reducers/types/user'
-import { BASE_URL } from './../../constants/server';
+import { BASE_URL, API_V1_GET_TOKEN } from './../../constants/server';
 import './../../../public/scss/basic/loginForm/LoginForm.scss'
 import axios from 'axios';
+import { loadLocalStorage, saveStateToLocalStorage } from './../../../storages/localStorage';
 
 class LoginForm extends Component {
     constructor(props) {
         super(props);
     }
 
+    componentDidMount() {
+        const lastUserData = loadLocalStorage('user');
+
+        if(
+            !!lastUserData &&
+            this.props.user.token === null &&
+            lastUserData.token !== null
+        )
+        {
+            this.props.onAuthUser(lastUserData);
+            const { history } = this.props;
+            if(typeof history === "object") history.push("/");
+        }
+    }
+
     onFormSubmit(e) {
         e.preventDefault();
         let self = this;
-        axios.post(`${BASE_URL}/api/v1/en/authenticate/token`, {
+        let data = {
             email: this.inputEmail.value,
             password: this.inputPassword.value
-        })
+        };
+
+        axios.post(`${BASE_URL}${API_V1_GET_TOKEN}`, data )
             .then(function (response) {
                 self.props.onAuthUser(response.data);
+                saveStateToLocalStorage('user', response.data);
+                const { history } = self.props;
+
+                if(typeof history === "object") history.push("/");
             })
             .catch(function (error) {
                 self.props.onUserNotAuthorized(error);
             });
+
     }
 
     render() {
 
-        const { token } = this.props;
-        console.log('token',token);
         return(
             <div className="login-box login-wrapper">
+
                 <div className="login-logo">
-                    <Link to='/'>
-                        <b>Ownhome</b> admin panel
-                    </Link>
+                    <b>Ownhome</b>
+                    <div>
+                        admin panel
+                    </div>
                 </div>
                 <div className="login-box-body">
                     <p className="login-box-msg">Sign in to start your session</p>
@@ -45,11 +68,11 @@ class LoginForm extends Component {
 
                         <div className="form-group has-feedback">
                             <input type="email" ref={(input) => { this.inputEmail = input;} } className="form-control" placeholder="Email"/>
-                                <span className="glyphicon glyphicon-envelope form-control-feedback"></span>
+                            <span className="glyphicon glyphicon-envelope form-control-feedback"></span>
                         </div>
                         <div className="form-group has-feedback">
                             <input type="password" ref={ (input) => { this.inputPassword = input; }}  className="form-control" placeholder="Password"/>
-                                <span className="glyphicon glyphicon-lock form-control-feedback"></span>
+                            <span className="glyphicon glyphicon-lock form-control-feedback"></span>
                         </div>
                         <div className="row">
                             <div className="col-xs-8">
@@ -73,18 +96,16 @@ class LoginForm extends Component {
     }
 }
 
-
-
 function mapStateToProps(state) {
 
-    const { token } = state;
+    const { user } = state;
 
     return {
-        token,
+        user,
     }
 }
 
-export default connect(
+export default withRouter(connect(
     mapStateToProps,
     dispatch => ({
         onAuthUser: (user) => {
@@ -94,4 +115,4 @@ export default connect(
             dispatch({ type: USER_NOT_AUTHORIZED , payload: error})
         }
     })
-)(withRouter(LoginForm));
+)(LoginForm));

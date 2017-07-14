@@ -1,8 +1,9 @@
 import { combineReducers } from 'redux';
-import { routerReducer } from 'react-router-redux';
 
-import user from './user'
+import user from './user';
+import sidebar from './sidebar';
+
 export default combineReducers({
-    routing: routerReducer,
-    user
+    user,
+    sidebar
 });

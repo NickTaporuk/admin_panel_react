@@ -1,32 +1,21 @@
-import React, { Component, PropTypes } from 'react'
-
-import {
-    Redirect,
-} from 'react-router-dom';
-
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { Redirect } from 'react-router-dom'
 
-export default function requireAuthentication(Component) {
+export default (ComposedComponent) => {
+    class Authentication extends Component {
 
-    class AuthenticatedComponent extends Component {
         render() {
-            console.log('this.props.user:',this.props.user);
-            return (
-                <div>
-                    {this.props.user.isAuthenticated === true
-                        ? <Component {...this.props} />
-                        : <Redirect to='/login'/>
-                    }
-                </div>
-            )
+
+            return this.props.authenticated ? <ComposedComponent {...this.props} /> : <Redirect to="/login"/>;
         }
     }
 
-    function mapStateToProps(state) {
+    const mapStateToProps = state => {
         return {
-            user: state.user
-        }
-    }
+            authenticated: state.user.isAuthenticated
+        };
+    };
 
-    return connect(mapStateToProps)(AuthenticatedComponent)
+    return connect(mapStateToProps)(Authentication);
 }
