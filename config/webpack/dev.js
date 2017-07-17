@@ -15,7 +15,7 @@ module.exports = {
     module : {
         rules : [
             {
-                test: /\.js$/,
+                test: /\.js|\.jsx$/,
                 exclude:/node_modules/,
                 use: [
                     'babel-loader'
@@ -44,7 +44,7 @@ module.exports = {
     plugins: [
         new webpack.BannerPlugin("Copyright Nickolay Kuropatkin."),
         new HtmlWebpackPlugin({
-            template: path.normalize(`${__dirname}/../../src/layouts/basic/index.html`)
+            template: path.normalize(`${__dirname}/../../src/layouts/basic/index.jsx`)
         }),
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NamedModulesPlugin(),
@@ -59,7 +59,8 @@ module.exports = {
         open: true,
         hot: true,
         historyApiFallback: true,
-        openPage: ''
+        openPage: '',
+        headers: { 'Access-Control-Allow-Origin': '*' }
 
     }
 };

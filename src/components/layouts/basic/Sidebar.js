@@ -2,30 +2,58 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router'
 import Img from './../../../img/defaults/default_avatar.jpg';
-import { Link } from 'react-router-dom'
+import {Link} from 'react-router-dom'
 
+
+const addEvent = function (object, type, callback) {
+    if (object == null || typeof(object) == 'undefined') return;
+    if (object.addEventListener) {
+        object.addEventListener(type, callback, false);
+    } else if (object.attachEvent) {
+        object.attachEvent("on" + type, callback);
+    } else {
+        object["on" + type] = callback;
+    }
+};
+
+
+const removeEvent = function (object, type, callback) {
+    if (object == null || typeof(object) == 'undefined') return;
+    if (object.removeEventListener) {
+        object.removeEventListener(type, callback, false);
+    } else if (object.detachEvent) {
+        object.detachEvent("on" + type, callback);
+    } else {
+        object["on" + type] = callback;
+    }
+};
 
 class Sidebar extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            sidebar : {
-                type : 'open',
-                additionalClass : 'sidebar-collapse'
-            }
+            sidebar: {
+                additionalClass: 'sidebar-collapse'
+            },
+            collapseScreenSize: 767,
+            searchClass: 'sidebar-open'
         }
+        this.onDetectSidebarWidth = this.onDetectSidebarWidth.bind(this);
+    }
+
+    componentWillMount() {
+        addEvent(window, "resize", this.onDetectSidebarWidth);
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log('this.props.sidebar:' , this.props.sidebar, 'nextProps:',nextProps);
-        if( this.props.sidebar !== nextProps.sidebar) {
-            this.onSidebarToogle();
+        if (this.props.sidebar !== nextProps.sidebar) {
+            this.onSidebarToogle(nextProps.sidebar);
         }
     }
 
     render() {
-        const { user } = this.props;
+        const {user} = this.props;
         return (
             <aside className="main-sidebar">
                 <section className="sidebar">
@@ -40,217 +68,71 @@ class Sidebar extends Component {
                     </div>
                     <form action="#" method="get" className="sidebar-form">
                         <div className="input-group">
-                            <input type="text" name="q" className="form-control" placeholder="Search..."/>
-          <span className="input-group-btn">
-                <button type="submit" name="search" id="search-btn" className="btn btn-flat"><i className="fa fa-search"></i>
-                </button>
-              </span>
+                            <input type="text" name="q" className="form-control" placeholder="Search..." defaultValue=""/>
+                            <span className="input-group-btn">
+                                <button type="submit" name="search" id="search-btn" className="btn btn-flat"><i
+                                    className="fa fa-search"></i>
+                                </button>
+                            </span>
                         </div>
                     </form>
                     <ul className="sidebar-menu" data-widget="tree">
                         <li className="header">MAIN NAVIGATION</li>
-                        <li className="active treeview">
-                            <a href="#">
-                                <i className="fa fa-dashboard"></i> <span>Dashboard</span>
-                                <span className="pull-right-container">
-              <i className="fa fa-angle-left pull-right"></i>
-            </span>
-                            </a>
-                            <ul className="treeview-menu">
-                                <li className="active"><a href="index.html"><i className="fa fa-circle-o"></i> Dashboard v1</a>
-                                </li>
-                                <li><a href="index2.html"><i className="fa fa-circle-o"></i> Dashboard v2</a></li>
-                            </ul>
-                        </li>
-                        <li className="treeview">
+                        <li>
                             <Link to="users">
-                                <i className="fa fa-files-o"></i>
-                                <span>Users</span>
+                                <i className="fa fa-th"></i> <span>Users</span>
                                 <span className="pull-right-container">
-              <span className="label label-primary pull-right">4</span>
-            </span>
+                                    <small className="label pull-right bg-green">new</small>
+                                </span>
                             </Link>
-                            <ul className="treeview-menu">
-                                <li><a href="pages/layout/top-nav.html"><i className="fa fa-circle-o"></i> Top
-                                    Navigation</a></li>
-                                <li><a href="pages/layout/boxed.html"><i className="fa fa-circle-o"></i> Boxed</a></li>
-                                <li><a href="pages/layout/fixed.html"><i className="fa fa-circle-o"></i> Fixed</a></li>
-                                <li><a href="pages/layout/collapsed-sidebar.html"><i className="fa fa-circle-o"></i>
-                                    Collapsed Sidebar</a></li>
-                            </ul>
                         </li>
-                        <li>
-                            <a href="pages/widgets.html">
-                                <i className="fa fa-th"></i> <span>Widgets</span>
-                                <span className="pull-right-container">
-              <small className="label pull-right bg-green">new</small>
-            </span>
-                            </a>
-                        </li>
-                        <li className="treeview">
-                            <a href="#">
-                                <i className="fa fa-pie-chart"></i>
-                                <span>Charts</span>
-                                <span className="pull-right-container">
-              <i className="fa fa-angle-left pull-right"></i>
-            </span>
-                            </a>
-                            <ul className="treeview-menu">
-                                <li><a href="pages/charts/chartjs.html"><i className="fa fa-circle-o"></i> ChartJS</a></li>
-                                <li><a href="pages/charts/morris.html"><i className="fa fa-circle-o"></i> Morris</a></li>
-                                <li><a href="pages/charts/flot.html"><i className="fa fa-circle-o"></i> Flot</a></li>
-                                <li><a href="pages/charts/inline.html"><i className="fa fa-circle-o"></i> Inline charts</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li className="treeview">
-                            <a href="#">
-                                <i className="fa fa-laptop"></i>
-                                <span>UI Elements</span>
-                                <span className="pull-right-container">
-              <i className="fa fa-angle-left pull-right"></i>
-            </span>
-                            </a>
-                            <ul className="treeview-menu">
-                                <li><a href="pages/UI/general.html"><i className="fa fa-circle-o"></i> General</a></li>
-                                <li><a href="pages/UI/icons.html"><i className="fa fa-circle-o"></i> Icons</a></li>
-                                <li><a href="pages/UI/buttons.html"><i className="fa fa-circle-o"></i> Buttons</a></li>
-                                <li><a href="pages/UI/sliders.html"><i className="fa fa-circle-o"></i> Sliders</a></li>
-                                <li><a href="pages/UI/timeline.html"><i className="fa fa-circle-o"></i> Timeline</a></li>
-                                <li><a href="pages/UI/modals.html"><i className="fa fa-circle-o"></i> Modals</a></li>
-                            </ul>
-                        </li>
-                        <li className="treeview">
-                            <a href="#">
-                                <i className="fa fa-edit"></i> <span>Forms</span>
-                                <span className="pull-right-container">
-              <i className="fa fa-angle-left pull-right"></i>
-            </span>
-                            </a>
-                            <ul className="treeview-menu">
-                                <li><a href="pages/forms/general.html"><i className="fa fa-circle-o"></i> General
-                                    Elements</a></li>
-                                <li><a href="pages/forms/advanced.html"><i className="fa fa-circle-o"></i> Advanced Elements</a>
-                                </li>
-                                <li><a href="pages/forms/editors.html"><i className="fa fa-circle-o"></i> Editors</a></li>
-                            </ul>
-                        </li>
-                        <li className="treeview">
-                            <a href="#">
-                                <i className="fa fa-table"></i> <span>Tables</span>
-                                <span className="pull-right-container">
-              <i className="fa fa-angle-left pull-right"></i>
-            </span>
-                            </a>
-                            <ul className="treeview-menu">
-                                <li><a href="pages/tables/simple.html"><i className="fa fa-circle-o"></i> Simple tables</a>
-                                </li>
-                                <li><a href="pages/tables/data.html"><i className="fa fa-circle-o"></i> Data tables</a></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="pages/calendar.html">
-                                <i className="fa fa-calendar"></i> <span>Calendar</span>
-                                <span className="pull-right-container">
-              <small className="label pull-right bg-red">3</small>
-              <small className="label pull-right bg-blue">17</small>
-            </span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="pages/mailbox/mailbox.html">
-                                <i className="fa fa-envelope"></i> <span>Mailbox</span>
-                                <span className="pull-right-container">
-              <small className="label pull-right bg-yellow">12</small>
-              <small className="label pull-right bg-green">16</small>
-              <small className="label pull-right bg-red">5</small>
-            </span>
-                            </a>
-                        </li>
-                        <li className="treeview">
-                            <a href="#">
-                                <i className="fa fa-folder"></i> <span>Examples</span>
-                                <span className="pull-right-container">
-              <i className="fa fa-angle-left pull-right"></i>
-            </span>
-                            </a>
-                            <ul className="treeview-menu">
-                                <li><a href="pages/examples/invoice.html"><i className="fa fa-circle-o"></i> Invoice</a>
-                                </li>
-                                <li><a href="pages/examples/profile.html"><i className="fa fa-circle-o"></i> Profile</a>
-                                </li>
-                                <li><a href="pages/examples/login.html"><i className="fa fa-circle-o"></i> Login</a></li>
-                                <li><a href="pages/examples/register.html"><i className="fa fa-circle-o"></i> Register</a>
-                                </li>
-                                <li><a href="pages/examples/lockscreen.html"><i className="fa fa-circle-o"></i>
-                                    Lockscreen</a></li>
-                                <li><a href="pages/examples/404.html"><i className="fa fa-circle-o"></i> 404 Error</a></li>
-                                <li><a href="pages/examples/500.html"><i className="fa fa-circle-o"></i> 500 Error</a></li>
-                                <li><a href="pages/examples/blank.html"><i className="fa fa-circle-o"></i> Blank Page</a>
-                                </li>
-                                <li><a href="pages/examples/pace.html"><i className="fa fa-circle-o"></i> Pace Page</a></li>
-                            </ul>
-                        </li>
-                        <li className="treeview">
-                            <a href="#">
-                                <i className="fa fa-share"></i> <span>Multilevel</span>
-                                <span className="pull-right-container">
-              <i className="fa fa-angle-left pull-right"></i>
-            </span>
-                            </a>
-                            <ul className="treeview-menu">
-                                <li><a href="#"><i className="fa fa-circle-o"></i> Level One</a></li>
-                                <li className="treeview">
-                                    <a href="#"><i className="fa fa-circle-o"></i> Level One
-                                        <span className="pull-right-container">
-                  <i className="fa fa-angle-left pull-right"></i>
-                </span>
-                                    </a>
-                                    <ul className="treeview-menu">
-                                        <li><a href="#"><i className="fa fa-circle-o"></i> Level Two</a></li>
-                                        <li className="treeview">
-                                            <a href="#"><i className="fa fa-circle-o"></i> Level Two
-                                                <span className="pull-right-container">
-                      <i className="fa fa-angle-left pull-right"></i>
-                    </span>
-                                            </a>
-                                            <ul className="treeview-menu">
-                                                <li><a href="#"><i className="fa fa-circle-o"></i> Level Three</a></li>
-                                                <li><a href="#"><i className="fa fa-circle-o"></i> Level Three</a></li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li><a href="#"><i className="fa fa-circle-o"></i> Level One</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="https://adminlte.io/docs"><i className="fa fa-book"></i> <span>Documentation</span></a>
-                        </li>
-                        <li className="header">LABELS</li>
-                        <li><a href="#"><i className="fa fa-circle-o text-red"></i> <span>Important</span></a></li>
-                        <li><a href="#"><i className="fa fa-circle-o text-yellow"></i> <span>Warning</span></a></li>
-                        <li><a href="#"><i className="fa fa-circle-o text-aqua"></i> <span>Information</span></a></li>
                     </ul>
                 </section>
             </aside>
-            )
+        )
+    }
+
+    componentWillUnmount() {
+        removeEvent(window, "resize", this.onDetectSidebarWidth);
+    }
+
+    onDetectSidebarWidth() {
+        var width = window.innerWidth
+            || document.documentElement.clientWidth
+            || document.body.clientWidth;
+
+        if (width <= this.state.collapseScreenSize && document.body.className.indexOf(this.state.searchClass) > -1) {
+            document.body.classList.remove(this.state.searchClass);
+        } else {
+            document.body.classList.add(this.state.searchClass);
         }
-    onSidebarToogle() {
+    }
+
+    onSidebarToogle(nextSidebarState) {
+        var width = window.innerWidth
+            || document.documentElement.clientWidth
+            || document.body.clientWidth;
+
+        if (width <= this.state.collapseScreenSize && document.body.className.indexOf(this.state.searchClass) > -1 && nextSidebarState) {
+            document.body.classList.remove(this.state.searchClass);
+        } else {
+            document.body.classList.add(this.state.searchClass);
+        }
         document.body.classList.toggle(this.state.sidebar.additionalClass);
     }
 }
 
-    function mapStateToProps(state) {
+function mapStateToProps(state) {
 
-        const { user, sidebar } = state;
+    const {user, sidebar} = state;
 
-        return {
+    return {
         user,
         sidebar
     }
-    }
+}
 
-    export default connect(
+export default connect(
     mapStateToProps,
     dispatch => ({})
-    )(withRouter(Sidebar));
+)(withRouter(Sidebar));

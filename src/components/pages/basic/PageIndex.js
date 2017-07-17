@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router'
+import { NavLink } from 'react-router-dom'
 
 class PageIndex extends Component {
     constructor(props) {
@@ -8,6 +9,14 @@ class PageIndex extends Component {
     }
 
     render() {
+        const oddEvent = (match, location) => {
+            if (!match) {
+                return false
+            }
+            const eventID = parseInt(match.params.eventID)
+            console.log('match.params:',match.params);
+            return !isNaN(eventID) && eventID % 2 === 1
+        }
 
         return (
             <div className="content-wrapper">
@@ -17,7 +26,12 @@ class PageIndex extends Component {
                         <small>Control panel</small>
                     </h1>
                     <ol className="breadcrumb">
-                        <li><a href="#"><i className="fa fa-dashboard"></i> Home</a></li>
+                        <li>
+                            <NavLink to="/" isActive={oddEvent}>
+                                <i className="fa fa-dashboard"></i>
+                                Home
+                            </NavLink>
+                        </li>
                         <li className="active">Dashboard</li>
                     </ol>
                 </section>
@@ -34,7 +48,7 @@ class PageIndex extends Component {
                                 <div className="icon">
                                     <i className="ion ion-bag"></i>
                                 </div>
-                                <a href="#" className="small-box-footer">More info <i
+                                <a  className="small-box-footer">More info <i
                                     className="fa fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
@@ -48,7 +62,7 @@ class PageIndex extends Component {
                                 <div className="icon">
                                     <i className="ion ion-stats-bars"></i>
                                 </div>
-                                <a href="#" className="small-box-footer">More info <i
+                                <a className="small-box-footer">More info <i
                                     className="fa fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
@@ -62,7 +76,7 @@ class PageIndex extends Component {
                                 <div className="icon">
                                     <i className="ion ion-person-add"></i>
                                 </div>
-                                <a href="#" className="small-box-footer">More info <i
+                                <a className="small-box-footer">More info <i
                                     className="fa fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
@@ -76,8 +90,9 @@ class PageIndex extends Component {
                                 <div className="icon">
                                     <i className="ion ion-pie-graph"></i>
                                 </div>
-                                <a href="#" className="small-box-footer">More info <i
-                                    className="fa fa-arrow-circle-right"></i></a>
+                                <a className="small-box-footer">More info
+                                    <i className="fa fa-arrow-circle-right"></i>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -85,8 +100,8 @@ class PageIndex extends Component {
                         <section className="col-lg-7 connectedSortable">
                             <div className="nav-tabs-custom">
                                 <ul className="nav nav-tabs pull-right">
-                                    <li className="active"><a href="#revenue-chart" data-toggle="tab">Area</a></li>
-                                    <li><a href="#sales-chart" data-toggle="tab">Donut</a></li>
+                                    <li className="active"><a  data-toggle="tab">Area</a></li>
+                                    <li><a  data-toggle="tab">Donut</a></li>
                                     <li className="pull-left header"><i className="fa fa-inbox"></i> Sales</li>
                                 </ul>
                                 <div className="tab-content no-padding">
@@ -118,7 +133,7 @@ class PageIndex extends Component {
                                         <img src="dist/img/user4-128x128.jpg" alt="user image" className="online"/>
 
                                         <p className="message">
-                                            <a href="#" className="name">
+                                            <a className="name">
                                                 <small className="text-muted pull-right"><i
                                                     className="fa fa-clock-o"></i> 2:15
                                                 </small>
@@ -145,7 +160,7 @@ class PageIndex extends Component {
                                         <img src="dist/img/user3-128x128.jpg" alt="user image" className="offline"/>
 
                                         <p className="message">
-                                            <a href="#" className="name">
+                                            <a className="name">
                                                 <small className="text-muted pull-right"><i
                                                     className="fa fa-clock-o"></i> 5:15
                                                 </small>
@@ -160,9 +175,9 @@ class PageIndex extends Component {
                                         <img src="dist/img/user2-160x160.jpg" alt="user image" className="offline"/>
 
                                         <p className="message">
-                                            <a href="#" className="name">
-                                                <small className="text-muted pull-right"><i
-                                                    className="fa fa-clock-o"></i> 5:30
+                                            <a className="name">
+                                                <small className="text-muted pull-right">
+                                                    <i className="fa fa-clock-o"></i> 5:30
                                                 </small>
                                                 Susan Doe
                                             </a>
@@ -177,8 +192,9 @@ class PageIndex extends Component {
                                         <input className="form-control" placeholder="Type message..."/>
 
                                         <div className="input-group-btn">
-                                            <button type="button" className="btn btn-success"><i
-                                                className="fa fa-plus"></i></button>
+                                            <button type="button" className="btn btn-success">
+                                                <i className="fa fa-plus"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -192,11 +208,11 @@ class PageIndex extends Component {
 
                                     <div className="box-tools pull-right">
                                         <ul className="pagination pagination-sm inline">
-                                            <li><a href="#">&laquo;</a></li>
-                                            <li><a href="#">1</a></li>
-                                            <li><a href="#">2</a></li>
-                                            <li><a href="#">3</a></li>
-                                            <li><a href="#">&raquo;</a></li>
+                                            <li><a>&laquo;</a></li>
+                                            <li><a>1</a></li>
+                                            <li><a>2</a></li>
+                                            <li><a>3</a></li>
+                                            <li><a>&raquo;</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -207,7 +223,7 @@ class PageIndex extends Component {
                         <i className="fa fa-ellipsis-v"></i>
                         <i className="fa fa-ellipsis-v"></i>
                       </span>
-                                            <input type="checkbox" value=""/>
+                                            <input type="checkbox"/>
                                             <span className="text">Design a nice theme</span>
                                             <small className="label label-danger"><i className="fa fa-clock-o"></i> 2
                                                 mins
@@ -222,7 +238,7 @@ class PageIndex extends Component {
                         <i className="fa fa-ellipsis-v"></i>
                         <i className="fa fa-ellipsis-v"></i>
                       </span>
-                                            <input type="checkbox" value=""/>
+                                            <input type="checkbox"/>
                                             <span className="text">Make the theme responsive</span>
                                             <small className="label label-info"><i className="fa fa-clock-o"></i> 4
                                                 hours
@@ -237,7 +253,7 @@ class PageIndex extends Component {
                         <i className="fa fa-ellipsis-v"></i>
                         <i className="fa fa-ellipsis-v"></i>
                       </span>
-                                            <input type="checkbox" value=""/>
+                                            <input type="checkbox"/>
                                             <span className="text">Let theme shine like a star</span>
                                             <small className="label label-warning"><i className="fa fa-clock-o"></i> 1
                                                 day
@@ -252,7 +268,7 @@ class PageIndex extends Component {
                         <i className="fa fa-ellipsis-v"></i>
                         <i className="fa fa-ellipsis-v"></i>
                       </span>
-                                            <input type="checkbox" value=""/>
+                                            <input type="checkbox"/>
                                             <span className="text">Let theme shine like a star</span>
                                             <small className="label label-success"><i className="fa fa-clock-o"></i> 3
                                                 days
@@ -267,7 +283,7 @@ class PageIndex extends Component {
                         <i className="fa fa-ellipsis-v"></i>
                         <i className="fa fa-ellipsis-v"></i>
                       </span>
-                                            <input type="checkbox" value=""/>
+                                            <input type="checkbox"/>
                                             <span className="text">Check your messages and notifications</span>
                                             <small className="label label-primary"><i className="fa fa-clock-o"></i> 1
                                                 week
@@ -282,7 +298,7 @@ class PageIndex extends Component {
                         <i className="fa fa-ellipsis-v"></i>
                         <i className="fa fa-ellipsis-v"></i>
                       </span>
-                                            <input type="checkbox" value=""/>
+                                            <input type="checkbox"/>
                                             <span className="text">Let theme shine like a star</span>
                                             <small className="label label-default"><i className="fa fa-clock-o"></i> 1
                                                 month
@@ -382,7 +398,7 @@ class PageIndex extends Component {
                                     <div className="row">
                                         <div className="col-xs-4 text-center"
                                              style={{borderRight: "1px solid #f4f4f4"}}>
-                                            <input type="text" className="knob" data-readonly="true" value="20"
+                                            <input type="text" className="knob" data-readonly="true" defaultValue="20"
                                                    data-width="60" data-height="60"
                                                    data-fgColor="#39CCCC"/>
 
@@ -390,14 +406,14 @@ class PageIndex extends Component {
                                         </div>
                                         <div className="col-xs-4 text-center"
                                              style={{borderRight: "1px solid #f4f4f4"}}>
-                                            <input type="text" className="knob" data-readonly="true" value="50"
+                                            <input type="text" className="knob" data-readonly="true" defaultValue="50"
                                                    data-width="60" data-height="60"
                                                    data-fgColor="#39CCCC"/>
 
                                             <div className="knob-label">Online</div>
                                         </div>
                                         <div className="col-xs-4 text-center">
-                                            <input type="text" className="knob" data-readonly="true" value="30"
+                                            <input type="text" className="knob" data-readonly="true" defaultValue="30"
                                                    data-width="60" data-height="60"
                                                    data-fgColor="#39CCCC"/>
 
@@ -418,10 +434,10 @@ class PageIndex extends Component {
                                                     data-toggle="dropdown">
                                                 <i className="fa fa-bars"></i></button>
                                             <ul className="dropdown-menu pull-right" role="menu">
-                                                <li><a href="#">Add new event</a></li>
-                                                <li><a href="#">Clear events</a></li>
+                                                <li><a>Add new event</a></li>
+                                                <li><a>Clear events</a></li>
                                                 <li className="divider"></li>
-                                                <li><a href="#">View calendar</a></li>
+                                                <li><a>View calendar</a></li>
                                             </ul>
                                         </div>
                                         <button type="button" className="btn btn-success btn-sm" data-widget="collapse">

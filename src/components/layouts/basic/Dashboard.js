@@ -4,26 +4,35 @@ import { Redirect } from 'react-router-dom'
 import Header from './Header'
 import Footer from './Footer'
 import Sidebar from './Sidebar'
+import { loadLocalStorage } from './../../../storages/localStorage';
+import { SET_CURRENT_USER } from './../../../reducers/types/user'
 
 export default (ComposedComponent) => {
     class Dashboard extends Component {
         constructor(props) {
             super(props);
             this.state = {
-                skin : 'skin-blue',
-                sidebar :  {
-                    mini : "sidebar-mini",
-                    open : "sidebar-open"
-                }
+                additionalClasses : ["skin-blue", "sidebar-mini", "sidebar-open"]
             };
         }
 
-        componentDidMount() {
-            document.body.classList.add(this.state.skin);
-            document.body.classList.add(this.state.sidebar.mini);
-            document.body.classList.add(this.state.sidebar.open);
+        componentWillMount() {
+            this.state.additionalClasses.forEach((item)=> {
+                document.body.classList.add(item);
+            })
         }
 
+        componentDidMount() {
+            const lastUserData = loadLocalStorage('user');
+
+            if(
+                !!lastUserData &&
+                lastUserData.token !== null
+            )
+            {
+                this.props.onAuthUser(lastUserData);
+            }
+        }
         render() {
             return this.props.authenticated ?
                 <div>
@@ -35,9 +44,9 @@ export default (ComposedComponent) => {
         }
 
         componentWillUnmount() {
-            document.body.classList.remove(this.state.skin);
-            document.body.classList.remove(this.state.sidebar.mini);
-            document.body.classList.remove(this.state.sidebar.open)
+            this.state.additionalClasses.forEach((item)=> {
+                document.body.classList.remove(item);
+            })
         }
     }
 
@@ -47,5 +56,11 @@ export default (ComposedComponent) => {
         };
     };
 
-    return connect(mapStateToProps)(Dashboard);
+    const mapDispatchToProps = dispatch => ({
+        onAuthUser: (user) => {
+            dispatch({ type: SET_CURRENT_USER , payload : user })
+        }
+    });
+
+    return connect(mapStateToProps, mapDispatchToProps)(Dashboard);
 }

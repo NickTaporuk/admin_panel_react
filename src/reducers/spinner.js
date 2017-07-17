@@ -1,4 +1,4 @@
-import { SIDEBAR_STATE } from './types/sidebar'
+import { SPINNER_STATE } from './types/spinner'
 
 const initialState = false;
 
@@ -6,7 +6,7 @@ export default function (state = initialState, action) {
 
     switch (action.type) {
 
-        case SIDEBAR_STATE :
+        case SPINNER_STATE :
             return action.payload.toogle;
             break;
 

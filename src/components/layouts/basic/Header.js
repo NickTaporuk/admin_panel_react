@@ -19,7 +19,6 @@ class Header extends Component {
     }
     onSidebarState(e) {
         e.preventDefault();
-        console.log(1111111);
         const { sidebar, onSidebarReduxState } = this.props;
 
         onSidebarReduxState(!sidebar)
@@ -303,10 +302,12 @@ export default connect(
     mapStateToProps,
     dispatch => ({
         onSidebarReduxState: (toogle) => {
+
+            console.log('toogle:' , toogle );
             const payload = {
                 toogle
-            }
-            dispatch({ type: SIDEBAR_STATE , payload})
+            };
+            dispatch({ type: SIDEBAR_STATE , payload })
         }
     })
 )(withRouter(Header));
